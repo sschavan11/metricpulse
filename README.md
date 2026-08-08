@@ -12,6 +12,16 @@ This is a solo portfolio project. It is not affiliated with, built for, or model
 - **Grounded GenAI.** A natural-language query box answers strictly from numbers computed by pandas/DuckDB. An optional LLM phrasing step is guardrail-checked at runtime, and a test suite proves the guardrail actually rejects a hallucinated number, not just that the happy path works.
 - **AI-tool use held to a normal engineering bar.** Every claim below is checkable by running the code in this repo.
 
+## Screenshots
+
+| Overview — real-data KPIs & trends | Cohort Explorer — self-serve filtering |
+|---|---|
+| ![Overview](docs/screenshots/overview.png) | ![Cohort Explorer](docs/screenshots/cohort_explorer.png) |
+
+| Experiment Readout — labeled synthetic A/B analysis | Ask the Data — grounded NL query |
+|---|---|
+| ![Experiment Readout](docs/screenshots/experiment_readout.png) | ![Ask the Data](docs/screenshots/ask_the_data.png) |
+
 ## Architecture
 
 ```
@@ -53,6 +63,7 @@ app/ (Streamlit)         tests/ (pytest)
 - **The experiment result is reported honestly, including non-significance.** With ~35 users split into two groups, the 95% bootstrap CI is wide and the effect is not statistically significant — the CI does contain the true injected effect, but p ≈ 0.3. The app and NLQ engine report this as-is rather than hiding it or re-running with a bigger synthetic effect until it "looks good."
 - **Guardrail runs at runtime, not just in tests.** `nlq.guardrail_check` is called on every LLM-phrased response, not only inside the test suite — a hallucinated number is rejected in production, not just in CI.
 - **Zero required paid dependencies.** `anthropic`/`openai` are not in `requirements.txt`. The LLM phrasing path only imports them lazily, inside a try/except, only if an API key is present.
+- **A small, deliberate visual system instead of default widget styling.** `app/_style.py` defines a fixed categorical palette (blue = primary/treatment, orange = control, aqua = secondary metric), reused across every stat tile and Altair chart, so the app reads as one system rather than default Streamlit chrome. Charts use Altair (already a Streamlit dependency) instead of `st.line_chart`/`st.bar_chart` specifically to get real hover tooltips, muted gridlines/axes, and a legend whenever two series are compared — none of which the built-in chart wrappers expose.
 
 ## Running it
 

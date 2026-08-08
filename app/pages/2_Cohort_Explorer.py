@@ -9,18 +9,21 @@ import pandas as pd
 import streamlit as st
 
 from app._shared import get_mart
+from app._style import BLUE, inject_base_css, line_chart, stat_tile
 from metricpulse import metrics
 
 st.set_page_config(page_title="Cohort Explorer | MetricPulse", layout="wide")
+inject_base_css()
+
 st.title("Cohort Explorer")
-st.caption("Self-serve filtering over real data -- a stakeholder can answer their own follow-up question here instead of filing a request.")
+st.caption("Self-serve filtering over real data — a stakeholder can answer their own follow-up question here instead of filing a request.")
 
 df = get_mart()
 all_users = sorted(df["user_id"].unique())
 min_date, max_date = df["date"].min().date(), df["date"].max().date()
 
 with st.sidebar:
-    st.header("Filters")
+    st.markdown("#### Filters")
     selected_users = st.multiselect("Users", all_users, default=all_users)
     date_range = st.date_input("Date range", value=(min_date, max_date), min_value=min_date, max_value=max_date)
     metric_label = st.selectbox("Metric to chart", sorted(set(metrics.SUPPORTED_METRICS.values())))
@@ -34,15 +37,24 @@ filtered = df[
 ]
 
 c1, c2 = st.columns(2)
-c1.metric("Rows in view", len(filtered))
-c2.metric(f"Avg {metric_label}", metrics.avg_metric(filtered, metric_label))
+with c1:
+    stat_tile("Rows in view", str(len(filtered)))
+with c2:
+    avg = metrics.avg_metric(filtered, metric_label)
+    stat_tile(f"Avg {metric_label}", f"{avg:,.1f}" if avg is not None else "—")
 
-st.subheader(f"{metric_label} over time (mean across selected users)")
+st.write("")
+st.markdown(f"##### {metric_label} over time")
+st.caption("Mean across the selected users.")
 if filtered.empty:
     st.warning("No rows match the current filters.")
 else:
-    chart_data = filtered.groupby("date")[metric_label].mean()
-    st.line_chart(chart_data)
+    chart_data = filtered.groupby("date", as_index=False)[metric_label].mean()
+    st.altair_chart(
+        line_chart(chart_data, x="date:T", y=f"{metric_label}:Q", color=BLUE, y_title=metric_label, x_title=None),
+        use_container_width=True,
+    )
 
-st.subheader("Underlying rows")
-st.dataframe(filtered, use_container_width=True, height=350)
+st.write("")
+st.markdown("##### Underlying rows")
+st.dataframe(filtered, use_container_width=True, height=350, hide_index=True)
