@@ -6,3 +6,9 @@ numpy==2.1.3
 scipy==1.14.1
 streamlit==1.40.1
 pytest==8.3.4
+
+# Optional: only imported if ANTHROPIC_API_KEY is set (see metricpulse/nlq.py).
+# Installing this costs nothing -- actual use costs money per Claude API call
+# (Claude Sonnet 5: ~$2-3 / MTok input, ~$10-15 / MTok output as of Aug 2026).
+# The app runs fully on the free deterministic path with this absent.
+anthropic==0.121.0

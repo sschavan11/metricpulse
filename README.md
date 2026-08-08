@@ -69,7 +69,7 @@ pytest -v                              # 19 tests, all passing as of this commit
 streamlit run app/streamlit_app.py
 ```
 
-To try the optional LLM-phrasing upgrade, set `ANTHROPIC_API_KEY` in your environment before launching the app. Without it, everything runs identically on the deterministic, zero-cost path — that's the default and the path the test suite exercises.
+To try the optional LLM-phrasing upgrade, set `ANTHROPIC_API_KEY` in your environment before launching the app. Without it, everything runs identically on the deterministic, zero-cost path — that's the default and the path the test suite exercises. The `anthropic` package itself is free to install; it's only imported if a key is present, and each upgraded call is a single short rephrase of an already-computed sentence run at `effort: "low"` on Claude Sonnet 5 (list price ~$2-3 / MTok input, ~$10-15 / MTok output as of Aug 2026) — real but negligible cost for a demo, never required.
 
 ## Honest scope
 

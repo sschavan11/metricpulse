@@ -225,8 +225,17 @@ def _call_anthropic(question: str, answer: Answer) -> str | None:
     )
     resp = client.messages.create(
         model="claude-sonnet-5",
-        max_tokens=200,
+        max_tokens=300,
         system=system,
+        # This is a trivial one-sentence rephrase of an already-computed
+        # answer, not a reasoning task -- low effort keeps even the optional
+        # paid path cheap and fast.
+        output_config={"effort": "low"},
         messages=[{"role": "user", "content": user_msg}],
     )
-    return resp.content[0].text if resp.content else None
+    if resp.stop_reason == "refusal":
+        return None
+    for block in resp.content:
+        if block.type == "text":
+            return block.text
+    return None
