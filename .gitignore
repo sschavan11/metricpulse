@@ -1,0 +1,21 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Large raw source files (regenerate via scripts/download_data.py) — not committed due to size
+data/raw_large/
+data/raw/_download/
+
+# DuckDB warehouse file (regenerate via scripts/build_warehouse.py)
+*.duckdb
+*.duckdb.wal
+
+# dbt
+dbt_project/target/
+dbt_project/logs/
+dbt_project/dbt_packages/
+
+.streamlit/secrets.toml
+.env
+dbt_project/.user.yml

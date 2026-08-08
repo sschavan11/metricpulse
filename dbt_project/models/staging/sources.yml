@@ -1,0 +1,26 @@
+version: 2
+
+# All sources below point at real, unmodified files: the small Fitbit CSVs in
+# data/raw/ (committed to git, downloaded via scripts/download_data.py from
+# https://zenodo.org/records/53894, CC-BY-4.0) and the derived heart-rate
+# aggregate in data/processed/ (computed by scripts/aggregate_heartrate.py
+# from the same source, no synthetic values). Paths are relative to this dbt
+# project directory.
+sources:
+  - name: raw
+    tables:
+      - name: p1_daily_activity
+        meta:
+          external_location: "../data/raw/p1_dailyActivity_merged.csv"
+      - name: p2_daily_activity
+        meta:
+          external_location: "../data/raw/p2_dailyActivity_merged.csv"
+      - name: p1_minute_sleep
+        meta:
+          external_location: "../data/raw/p1_minuteSleep_merged.csv"
+      - name: p2_minute_sleep
+        meta:
+          external_location: "../data/raw/p2_minuteSleep_merged.csv"
+      - name: daily_heartrate_agg
+        meta:
+          external_location: "../data/processed/daily_heartrate_agg.csv"

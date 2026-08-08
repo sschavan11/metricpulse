@@ -1,0 +1,17 @@
+version: 2
+
+models:
+  - name: mart_daily_user_metrics
+    description: >
+      One row per (user_id, date). The single source of truth the app and
+      the NL-query engine read from.
+    columns:
+      - name: user_id
+        data_tests:
+          - not_null
+      - name: date
+        data_tests:
+          - not_null
+      - name: total_steps
+        data_tests:
+          - not_null

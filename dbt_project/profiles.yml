@@ -1,0 +1,7 @@
+metricpulse:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: '../metricpulse.duckdb'
+      threads: 4
